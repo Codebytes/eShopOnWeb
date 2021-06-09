@@ -19,15 +19,16 @@ jobs:
     
     - name: Test with dotnet
       run: dotnet test ./eShopOnWeb.sln --configuration Release
-
+    - run: |	
+        mkdir -p ${{ github.workspace }}/artifact
     - name: dotnet publish
-      run: dotnet publish ./eShopOnWeb.sln -c Release -o \${{env.DOTNET_ROOT}}/myapp
+      run: dotnet publish ./eShopOnWeb.sln -c Release -o ${{ github.workspace }}/artifact
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v2
       with:
         name: .net-app
-        path: \${{env.DOTNET_ROOT}}/myapp
+        path: ${{ github.workspace }}/artifact
 
 
   deploy:
