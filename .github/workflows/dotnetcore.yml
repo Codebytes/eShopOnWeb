@@ -22,7 +22,7 @@ jobs:
     - run: |	
         mkdir -p ${{ github.workspace }}/artifact
     - name: dotnet publish
-      run: dotnet publish ./eShopOnWeb.sln -c Release -o ${{ github.workspace }}/artifact
+      run: dotnet publish ./src/Web/Web.csproj -c Release -o ${{ github.workspace }}/artifact
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v2
