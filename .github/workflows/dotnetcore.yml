@@ -30,6 +30,11 @@ jobs:
         name: .net-app
         path: ${{ github.workspace }}/artifact
 
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v2
+      with:
+        name: iac
+        path: ${{ github.workspace }}/iac
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,10 +47,18 @@ jobs:
     - name: Download artifact from build job
       uses: actions/download-artifact@v2
       with:
+        name: iac
+        path: iac
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v2
+      with:
         name: .net-app
+        path: dotnet
+    - name: Deploy Bicep
+      run: ls -la iac      
     - uses: microsoft/variable-substitution@v1 
       with:
-        files: 'appsettings.json'
+        files: dotnet/'appsettings.json'
       env:
         ConnectionStrings.CatalogConnection: ${{ secrets.CATALOGDB }}
         ConnectionStrings.IdentityConnection: ${{ secrets.IDENTITY }}
@@ -56,4 +69,4 @@ jobs:
         app-name: 'cayers-eShopOnWeb'
         slot-name: 'production'
         publish-profile: \${{ secrets.publishprofile }}
-        package: .
+        package: dotnet
