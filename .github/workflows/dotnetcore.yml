@@ -43,7 +43,12 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: .net-app
-
+    - uses: microsoft/variable-substitution@v1 
+      with:
+        files: 'appsettings.json'
+      env:
+        ConnectionStrings.CatalogConnection: ${{ secrets.CATALOGDB }}
+        ConnectionStrings.IdentityConnection: ${{ secrets.IDENTITY }}
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
