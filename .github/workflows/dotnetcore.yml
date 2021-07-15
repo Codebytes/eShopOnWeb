@@ -63,7 +63,7 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./iac/bicep/main.bicep
-        parameters: sqlAdministratorLogin=${{ secrets.SQL_ADMIN }} sqlAdministratorLoginPassword=${{ secrets.SQL_PASSWORD }}
+        parameters: sqlAdministratorLogin=${{ secrets.SQL_IDENTITY }} sqlAdministratorLoginPassword=${{ secrets.SQL_PASSWORD }}
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
