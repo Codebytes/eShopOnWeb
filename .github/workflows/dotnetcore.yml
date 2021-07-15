@@ -63,17 +63,12 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./iac/bicep/main.bicep
-    - uses: microsoft/variable-substitution@v1 
-      with:
-        files: dotnet/'appsettings.json'
-      env:
-        ConnectionStrings.CatalogConnection: ${{ secrets.CATALOGDB }}
-        ConnectionStrings.IdentityConnection: ${{ secrets.IDENTITY }}
+        parameters: sqlAdministratorLogin=${{ secrets.SQL_ADMIN }} sqlAdministratorLoginPassword=${{ secrets.SQL_PASSWORD }}
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'cayers-eShopOnWeb'
         slot-name: 'production'
-        publish-profile: \${{ secrets.publishprofile }}
+        publish-profile: \${{ secrets.AZURE_PUBLISH_PROFILE }}
         package: dotnet
