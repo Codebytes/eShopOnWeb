@@ -72,6 +72,19 @@ resource sqlserverName_AllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRu
   }
 }
 
+
+resource AppInsights_webSiteName 'Microsoft.Insights/components@2018-05-01-preview' = {
+  name: 'AppInsights${webSiteName}'
+  location: location
+  tags: {
+    displayName: 'AppInsightsComponent'
+  }
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+  }
+}
+
 resource hostingPlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: hostingPlanName
   location: location
@@ -88,7 +101,50 @@ resource webSite 'Microsoft.Web/sites@2020-06-01' = {
     'hidden-related:${hostingPlan.id}': 'empty'
     displayName: 'Website'
   }
+
   properties: {
+      siteConfig: {
+          appSettings: [
+              {
+                  name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+                  value: AppInsights_webSiteName.properties.InstrumentationKey
+              }
+              {
+                  name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
+                  value: '~2'
+
+              }
+              {
+                  name: 'XDT_MicrosoftApplicationInsights_Mode'
+                  value: 'recommended'
+              }
+              {
+                  name: 'InstrumentationEngine_EXTENSION_VERSION'
+                  value: '~1'
+              }
+
+              {
+                  name: 'XDT_MicrosoftApplicationInsights_BaseExtensions'
+                  value: '~1'
+              }
+              {
+                  name: 'XDT_MicrosoftApplicationInsights_PreemptSdk'
+                  value: '1'
+              }
+              {
+                  name: 'APPINSIGHTS_PROFILERFEATURE_VERSION'
+                  value: '1.0.0'
+              }
+              {
+                  name: 'APPINSIGHTS_SNAPSHOTFEATURE_VERSION'
+                  value: '1.0.0'
+              }
+              {
+                  name: 'DiagnosticServices_EXTENSION_VERSION'
+                  value:'~3'
+              }
+          ]
+      }
     serverFarmId: hostingPlan.id
   }
 }
@@ -107,18 +163,6 @@ resource webSiteConnectionStrings 'Microsoft.Web/sites/config@2020-06-01' = {
   }
 }
 
-resource AppInsights_webSiteName 'Microsoft.Insights/components@2018-05-01-preview' = {
-  name: 'AppInsights${webSite.name}'
-  location: location
-  tags: {
-    'hidden-link:${webSite.id}': 'Resource'
-    displayName: 'AppInsightsComponent'
-  }
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-  }
-}
 
 //output publishing profile
 output webSiteName string = webSiteName
