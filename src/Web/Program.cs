@@ -24,8 +24,12 @@ namespace Microsoft.eShopWeb.Web
                 try
                 {
                     var catalogContext = services.GetRequiredService<CatalogContext>();
+                    catalogContext.Database.EnsureCreated();
                     await CatalogContextSeed.SeedAsync(catalogContext, loggerFactory);
 
+                    var appIdentityDbContext = services.GetRequiredService<AppIdentityDbContext>();
+                    appIdentityDbContext.Database.EnsureCreated();
+                 
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     await AppIdentityDbContextSeed.SeedAsync(userManager, roleManager);
