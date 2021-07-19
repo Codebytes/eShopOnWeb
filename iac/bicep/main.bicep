@@ -119,3 +119,15 @@ resource AppInsights_webSiteName 'Microsoft.Insights/components@2018-05-01-previ
     Application_Type: 'web'
   }
 }
+
+//output publishing profile
+output publishingProfile object = {
+  name: 'publishingProfile'
+  value: {
+    publishUrl: '${webSite.properties.publishingProfile.publishUrl}'
+    publishMethod: '${webSite.properties.publishingProfile.publishMethod}'
+    scmType: '${webSite.properties.publishingProfile.scmType}'
+    repositoryUrl: '${webSite.properties.publishingProfile.repositoryUrl}'
+  }
+}
+
